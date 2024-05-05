@@ -1,0 +1,88 @@
+﻿@model Task1.Models.ChangeRequestForm
+
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<header class="pt-5 text-center">
+    <h2>SQUARE INFORMATIX LIMITED</h2>
+    <h3>SOFTWARE DEPARTMENT</h3>
+    <p class="fw-bolder fs-2">Change Request Form</p>
+</header>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="Create" method="post" class="row shadow-lg p-3" novalidate enctype="multipart/form-data">
+                <!-- Project Name -->
+                <div class="col-md-12 m-2">
+                    <label asp-for="projectName" class="form-label mt-3">Project Name</label>
+                    <input asp-for="projectName" class="form-control"  />
+                    <span asp-validation-for="projectName" class="text-danger"></span>
+                </div>
+
+                <!-- Module Name -->
+                <div class="col-md-12 m-2">
+                    <label asp-for="moduleName" class="form-label mt-3">Module Name</label>
+                    <input asp-for="moduleName" class="form-control"  />
+                    <span asp-validation-for="moduleName" class="text-danger"></span>
+                </div>
+
+                <!-- Request By -->
+                <div class="col-md-12 m-2">
+                    <label asp-for="requestBy" class="form-label mt-3">Request By</label>
+                    <input asp-for="requestBy" class="form-control" />
+                    <span asp-validation-for="requestBy" class="text-danger"></span>
+                </div>
+
+                <!-- Request Date -->
+                <div class="col-md-12 m-2">
+                    <label asp-for="requestDate" class="form-label mt-3">Request Date</label>
+                    <input asp-for="requestDate" type="date" class="form-control"  />
+                    <span asp-validation-for="requestDate" class="text-danger"></span>
+                </div>
+
+                <!-- Change Request Details -->
+                <div class="col-md-12 m-2">
+                    <label asp-for="changeRequestDetails" class="form-label mt-3">Change Request Details</label>
+                    <textarea asp-for="changeRequestDetails" class="form-control"></textarea>
+                    <span asp-validation-for="changeRequestDetails" class="text-danger"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-12 m-2">
+                    <label asp-for="status" class="form-label mt-3">Status</label>
+                    <select asp-for="status" class="form-select">
+                        <option value="">Choose Status</option>
+                        <option value="@Status.Approved">Approved</option>
+                        <option value="@Status.Cancel">Cancel</option>
+                        <option value="@Status.Deferred">Deferred</option>
+                    </select>
+                    <span asp-validation-for="status" class="text-danger"></span>
+                </div>
+
+                <!-- Authorized Signature -->
+                <div class="col-md-12 m-2">
+                    <label asp-for="signature" class="form-label mt-3">Authorized Signature</label>
+                    <input asp-for="signature" type="file" class="form-control" accept="image/*" />
+                    <span asp-validation-for="signature" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-md-12 m-2">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        @* </div> *@
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="/ChangeRequestForms/Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
