@@ -1,4 +1,4 @@
-﻿@model Task1.Models.ChangeRequestForm
+﻿@model Task1.Data.Models.ChangeRequestForm
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,41 +12,41 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="projectName" class="control-label"></label>
-                <input asp-for="projectName" class="form-control" />
-                <span asp-validation-for="projectName" class="text-danger"></span>
+                <label asp-for="ProjectName" class="control-label"></label>
+                <input asp-for="ProjectName" class="form-control" />
+                <span asp-validation-for="ProjectName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="moduleName" class="control-label"></label>
-                <input asp-for="moduleName" class="form-control" />
-                <span asp-validation-for="moduleName" class="text-danger"></span>
+                <label asp-for="ModuleName" class="control-label"></label>
+                <input asp-for="ModuleName" class="form-control" />
+                <span asp-validation-for="ModuleName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="requestBy" class="control-label"></label>
-                <input asp-for="requestBy" class="form-control" />
-                <span asp-validation-for="requestBy" class="text-danger"></span>
+                <label asp-for="RequestBy" class="control-label"></label>
+                <input asp-for="RequestBy" class="form-control" />
+                <span asp-validation-for="RequestBy" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="requestDate" class="control-label"></label>
-                <input asp-for="requestDate" class="form-control" />
-                <span asp-validation-for="requestDate" class="text-danger"></span>
+                <label asp-for="RequestDate" class="control-label"></label>
+                <input asp-for="RequestDate" class="form-control" />
+                <span asp-validation-for="RequestDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="changeRequestDetails" class="control-label"></label>
-                <input asp-for="changeRequestDetails" class="form-control" />
-                <span asp-validation-for="changeRequestDetails" class="text-danger"></span>
+                <label asp-for="ChangeRequestDetails" class="control-label"></label>
+                <input asp-for="ChangeRequestDetails" class="form-control" />
+                <span asp-validation-for="ChangeRequestDetails" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="status" class="control-label"></label>
-                <input asp-for="status" class="form-control" />
-                <span asp-validation-for="status" class="text-danger"></span>
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="signature" class="control-label"></label>
-                <input asp-for="signature" class="form-control" />
-                <span asp-validation-for="signature" class="text-danger"></span>
+                <label asp-for="Signature" class="control-label"></label>
+                <input asp-for="Signature" class="form-control" />
+                <span asp-validation-for="Signature" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

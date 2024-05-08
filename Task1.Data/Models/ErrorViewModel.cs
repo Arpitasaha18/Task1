@@ -1,4 +1,4 @@
-﻿namespace Task1.Models
+﻿namespace Task1.Data.Models
 {
     public class ErrorViewModel
     {

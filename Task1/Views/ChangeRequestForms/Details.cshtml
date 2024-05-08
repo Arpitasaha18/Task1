@@ -1,4 +1,4 @@
-﻿@model Task1.Models.ChangeRequestForm
+﻿@model Task1.Data.Models.ChangeRequestForm
 
 @{
     ViewData["Title"] = "Details";
@@ -11,50 +11,50 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.projectName)
+            @Html.DisplayNameFor(model => model.ProjectName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.projectName)
+            @Html.DisplayFor(model => model.ProjectName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.moduleName)
+            @Html.DisplayNameFor(model => model.ModuleName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.moduleName)
+            @Html.DisplayFor(model => model.ModuleName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.requestBy)
+            @Html.DisplayNameFor(model => model.RequestBy)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.requestBy)
+            @Html.DisplayFor(model => model.RequestBy)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.requestDate)
+            @Html.DisplayNameFor(model => model.RequestDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.requestDate)
+            @Html.DisplayFor(model => model.RequestDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.changeRequestDetails)
+            @Html.DisplayNameFor(model => model.ChangeRequestDetails)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.changeRequestDetails)
+            @Html.DisplayFor(model => model.ChangeRequestDetails)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.status)
+            @Html.DisplayNameFor(model => model.Status)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.status)
+            @Html.DisplayFor(model => model.Status)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.signature)
+            @Html.DisplayNameFor(model => model.Signature)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.signature)
+            @Html.DisplayFor(model => model.Signature)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

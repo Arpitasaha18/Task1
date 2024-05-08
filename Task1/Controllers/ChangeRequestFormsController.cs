@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Task1.Models;
+using Task1.Data.Models;
 
 namespace Task1.Controllers
 {
@@ -24,7 +24,10 @@ namespace Task1.Controllers
         // GET: ChangeRequestForms 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ChangeRequestForms.ToListAsync());
+            var requestForms = await _context.ChangeRequestForms
+                .Include(requestForm => requestForm.Employee)
+                .ToListAsync();
+            return View(requestForms);
         }
 
         // GET:ChangeRequestForms /Details/5
@@ -36,7 +39,7 @@ namespace Task1.Controllers
             }
 
             var requestForm = await _context.ChangeRequestForms
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (requestForm == null)
             {
                 return NotFound();
@@ -48,6 +51,8 @@ namespace Task1.Controllers
         // GET: ChangeRequestForm/Create
         public IActionResult Create()
         {
+            var data = _context.Employees.ToList();
+            ViewData["Employees"] = data;
             return View();
         }
 
@@ -59,8 +64,16 @@ namespace Task1.Controllers
         public async Task<IActionResult> Create(ChangeRequestForm requestForm, IFormFile signature)
         {
             //if (ModelState.IsValid)
-            {
-                if(signature == null)
+
+                requestForm.ProjectName = requestForm.ProjectName;
+                requestForm.ModuleName = requestForm.ModuleName;
+                requestForm.RequestDate = requestForm.RequestDate;
+                requestForm.RequestBy = requestForm.RequestBy;
+                requestForm.ChangeRequestDetails = requestForm.ChangeRequestDetails;
+                requestForm.Status = requestForm.Status;
+                requestForm.Signature=requestForm.Signature;
+
+                if (signature == null)
                 {
                     return BadRequest();
                 }
@@ -71,12 +84,12 @@ namespace Task1.Controllers
                     await signature.CopyToAsync(stream);
                 }
 
-                requestForm.signature = Path.Combine(_signFolderName, signature.FileName);
+                requestForm.Signature = Path.Combine(_signFolderName, signature.FileName);
 
                 _context.Add(requestForm);
                 await _context.SaveChangesAsync();
-                //return RedirectToAction(nameof(Index));
-            }
+                return RedirectToAction(nameof(Index));
+            
             return View(requestForm);
         }
 
@@ -103,7 +116,7 @@ namespace Task1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,projectName,moduleName,requestBy,requestDate,changeRequestDetails,status,sugnature")] ChangeRequestForm requestForm)
         {
-            if (id != requestForm.id)
+            if (id != requestForm.Id)
             {
                 return NotFound();
             }
@@ -117,7 +130,7 @@ namespace Task1.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ChangeRequestFormExists(requestForm.id))
+                    if (!ChangeRequestFormExists(requestForm.Id))
                     {
                         return NotFound();
                     }
@@ -140,7 +153,7 @@ namespace Task1.Controllers
             }
 
             var requestForm = await _context.ChangeRequestForms
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (requestForm == null)
             {
                 return NotFound();
@@ -166,7 +179,7 @@ namespace Task1.Controllers
 
         private bool ChangeRequestFormExists(int id)
         {
-            return _context.ChangeRequestForms.Any(e => e.id == id);
+            return _context.ChangeRequestForms.Any(e => e.Id == id);
         }
     }
 }

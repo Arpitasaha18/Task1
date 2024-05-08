@@ -22,6 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Task1.Data\Task1.Data.csproj" />
+    <ProjectReference Include="..\Task1.Service\Task1.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Views\Shared\_Layout.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

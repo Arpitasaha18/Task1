@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Plugins;
 using System.Diagnostics;
-using Task1.Models;
+using Task1.Data.Models;
 
 namespace Task1.Controllers
 {

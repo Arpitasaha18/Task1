@@ -1,4 +1,4 @@
-﻿namespace Task1.Enums
+﻿namespace Task1.Data.Enums
 {
     public enum Status
     {
