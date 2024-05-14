@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Task1.Data.Models.Department>
+﻿@* @model IEnumerable<Task1.Data.Models.Department> *@
 
 @{
     ViewData["Title"] = "Index";
@@ -9,33 +9,60 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div ng-app="ngApp" ng-controller="deapartmentCtrl">
+
+    @* Create *@
+    
+    <div class="row" ng-app="" ng-controller="deapartmentCtrl">
+        <div class="col-md-4">
+            @* <form> *@
+                <div class="form-group">
+                    <label for="id" class="control-label">ID</label>
+                    <input for="id" ng-model="id" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="name" class="control-label">Name</label>
+                    <input for="name" ng-model="name" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="button" value="Create" class="btn btn-primary" ng-click="Create()" />
+                </div>
+            @* </form> *@
+        </div>
+    </div>
+
+
+    @* data table *@
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Name
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="x in departments">
+                <td>
+                    {{ x.id }}
+                </td>
+                <td>
+                    {{ x.name }}
+                </td>
+                <td>
+                    <a>Edit</a> |
+                    <a>Details</a> |
+                    <a ng-click="Delete(x.id)">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="~/scriptng/module/app.js"></script>
+<script src="~/scriptng/controllers/departmentctrl.js"></script>
+<script src="~/scriptng/services/departmentservice.js"></script>

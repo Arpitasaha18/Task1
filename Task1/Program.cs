@@ -1,8 +1,13 @@
+using Task1.Service;
+using Task1.Service.Interface;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 
 var app = builder.Build();
 

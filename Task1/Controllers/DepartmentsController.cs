@@ -16,7 +16,12 @@ namespace Task1.Controllers
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departments.ToListAsync());
+            return View();
+        }
+
+        public async Task<IEnumerable<Department>> GetDepartments()
+        {
+            return await _context.Departments.ToListAsync();
         }
 
         // GET: Departments/Details/5
@@ -110,37 +115,27 @@ namespace Task1.Controllers
             return View(department);
         }
 
-        // GET: Departments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(department);
-        }
 
         // POST: Departments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpDelete]
+        public async Task<bool> Delete(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
-            if (department != null)
+            try
             {
-                _context.Departments.Remove(department);
-            }
+                var department = await _context.Departments.FindAsync(id);
+                if (department == null)
+                {
+                    return false;
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                _context.Departments.Remove(department);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private bool DepartmentExists(int id)
