@@ -9,11 +9,11 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<div ng-app="ngApp" ng-controller="deapartmentCtrl">
+<div ng-app="ngApp" ng-controller="departmentCtrl">
 
     @* Create *@
     
-    <div class="row" ng-app="" ng-controller="deapartmentCtrl">
+    <div class="row">
         <div class="col-md-4">
             @* <form> *@
                 <div class="form-group">
@@ -25,7 +25,8 @@
                     <input for="name" ng-model="name" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <input type="button" value="Create" class="btn btn-primary" ng-click="Create()" />
+                <input type="button" value="Create" class="btn btn-primary" ng-show="!editMode" ng-click="Create()" />
+                <input type="button" value="Update" class="btn btn-primary" ng-show="editMode" ng-click="Update()" />
                 </div>
             @* </form> *@
         </div>
@@ -54,7 +55,8 @@
                     {{ x.name }}
                 </td>
                 <td>
-                    <a>Edit</a> |
+                    <a ng-click="Edit(x.id, x.name)">Edit</a> |
+
                     <a>Details</a> |
                     <a ng-click="Delete(x.id)">Delete</a>
                 </td>
@@ -64,5 +66,5 @@
 </div>
 
 <script src="~/scriptng/module/app.js"></script>
-<script src="~/scriptng/controllers/departmentctrl.js"></script>
 <script src="~/scriptng/services/departmentservice.js"></script>
+<script src="~/scriptng/controllers/departmentctrl.js"></script>

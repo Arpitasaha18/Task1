@@ -1,31 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task1.Data.Models;
-using Task1.Service;
-using Task1.Service.Interface;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Task1.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly IEmployeeService _service;
+        private readonly Task1DbContext _context;
 
-        public EmployeesController(IEmployeeService employeeService)
+        public EmployeesController()
         {
-            _service = employeeService;
+            _context = new Task1DbContext();
         }
 
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var employees = await _service.GetEmployees();
-            return View(employees);
+            return View();
         }
+
+        public async Task<IEnumerable<Employee>> GetEmployees()
+        {
+            return await _context.Employees.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Department>> GetDepartments()
+        {
+            return await _context.Departments.ToListAsync();
+        }
+
 
         // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -35,108 +41,86 @@ namespace Task1.Controllers
                 return NotFound();
             }
 
-            var employee = await _service.GetEmployeeById(id.Value);
+            var employee = await _context.Employees
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
                 return NotFound();
             }
 
             return View(employee);
-        }
-
-        // GET: Employees/Create
-        public async Task<IActionResult> Create()
-        {
-            var departments = await _service.GetDepartments(); 
-            ViewData["Departments"] = new SelectList(departments, "Id", "Name");
-
-            return View();
         }
 
         // POST: Employees/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Employee employee)
+        public async Task<string> Create([Bind("Name, DepartmentId")][FromBody] Employee employee)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _service.CreateEmployee(employee);
-                return RedirectToAction(nameof(Index));
+                var employeeId = _context.Employees.Select(e => Convert.ToInt32(e.EmployeeId))
+                    .Max();
+                employee.EmployeeId = employeeId.ToString().PadLeft(8, '0');
+                _context.Add(employee);
+                await _context.SaveChangesAsync();
+                return "Successfully Created!";
             }
-
-            // Reload departments if validation fails
-            var departments = await _service.GetDepartments();
-            ViewData["Departments"] = new SelectList(departments, "Id", "Name");
-
-            return View(employee);
-        }
-
-        // GET: Employees/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
+            catch (Exception exp)
             {
-                return NotFound();
+                return exp.Message;
             }
-
-            var employee = await _service.GetEmployeeById(id.Value);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            var departments = await _service.GetDepartments();
-            ViewData["Departments"] = new SelectList(departments, "Id", "Name", employee.DepartmentId);
-
-            return View(employee);
         }
 
         // POST: Employees/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Employee employee)
+
+        public async Task<string> Edit(int id, [FromBody] Employee employee)
         {
-            if (id != employee.Id)
+            var existingEmployee = await _context.Employees.FindAsync(id);
+            if (existingEmployee == null)
             {
-                return NotFound();
+                return "Employee not found.";
             }
+            existingEmployee.Id = employee.Id;
+            existingEmployee.Name = employee.Name; // Update the 'Name' property
+            existingEmployee.DepartmentId = employee.DepartmentId; // Update the 'DepartmentId' property
 
-            if (ModelState.IsValid)
+            try
             {
-                await _service.UpdateEmployee(employee);
-                return RedirectToAction(nameof(Index));
+                _context.Update(existingEmployee);
+                await _context.SaveChangesAsync();
+                return "Successfully updated";
             }
-
-            var departments = await _service.GetDepartments(); // Reload if validation fails
-            ViewData["Departments"] = new SelectList(departments, "Id", "Name", employee.DepartmentId);
-
-            return View(employee);
-        }
-
-        // GET: Employees/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+            catch (Exception exp)
             {
-                return NotFound();
+                return exp.Message;
             }
-
-            var employee = await _service.GetEmployeeById(id.Value);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return View(employee);
         }
 
         // POST: Employees/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpDelete]
+        public async Task<bool> Delete(int id)
         {
-            await _service.DeleteEmployee(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var employee = await _context.Employees.FindAsync(id);
+                if (employee == null)
+                {
+                    return false;
+                }
+
+                _context.Employees.Remove(employee);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool EmployeeExists(int id)
+        {
+            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }

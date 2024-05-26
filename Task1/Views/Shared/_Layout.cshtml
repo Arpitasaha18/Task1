@@ -16,6 +16,93 @@
     
     <script src="~/scripts/angular.min.js"></script>
 
+    <script src="~/scriptng/module/app.js"></script>
+
+    <script src="~/scripts/angular-loader.min.js"></script>
+    <script src="~/scripts/ui-grid.core.min.js"></script>
+    <script src="~/scripts/ui-grid.auto-resize.min.js"></script>
+    <script src="~/scripts/ui-grid.base.min.js"></script>
+    <script src="~/scripts/ui-grid.cellnav.min.js"></script>
+    <script src="~/scripts/ui-grid.edit.min.js"></script>
+    <script src="~/scripts/ui-grid.empty-base-layer.min.js"></script>
+    <script src="~/scripts/ui-grid.expandable.min.js"></script>
+    <script src="~/scripts/ui-grid.exporter.min.js"></script>
+    <script src="~/scripts/ui-grid.grouping.min.js"></script>
+    <script src="~/scripts/ui-grid.importer.min.js"></script>
+    <script src="~/scripts/ui-grid.infinite-scroll.min.js"></script>
+    <script src="~/scripts/ui-grid.min.js"></script>
+    <script src="~/scripts/ui-grid.move-columns.min.js"></script>
+    <script src="~/scripts/ui-grid.pagination.min.js"></script>
+    <script src="~/scripts/ui-grid.pinning.min.js"></script>
+    <script src="~/scripts/ui-grid.resize-columns.min.js"></script>
+    <script src="~/scripts/ui-grid.row-edit.min.js"></script>
+    <script src="~/scripts/ui-grid.savestate.min.js"></script>
+    <script src="~/scripts/ui-grid.selection.min.js"></script>
+    <script src="~/scripts/ui-grid.tree-base.min.js"></script>
+    <script src="~/scripts/ui-grid.tree-view.min.js"></script>
+    <script src="~/scripts/ui-grid.validate.min.js"></script>
+    <script src="~/scripts/ui-grid.js"></script>
+    <script src="~/scripts/toastr.min.js"></script>
+    <script src="~/scriptng/commonservices/gridregistrationservice.js"></script>
+    <script src="~/scriptng/commonservices/notificationservice.js"></script>
+
+    <style>
+
+        .ui-grid-row {
+            height: 32px !important;
+        }
+
+        .ui-grid-cell {
+            height: 32px !important;
+        }
+
+            .ui-grid-cell input {
+                height: 32px !important;
+            }
+
+
+        .ui-grid-filter-input-0 {
+            background-color: #e8e6ed !important;
+            border-color: #3f51b5 !important;
+            border: 1px solid #f5f5f5 !important;
+            padding-right: 5px !important;
+            height: 28px !important;
+            /*  background-color: #fff !important;
+                */ border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            color: black !important;
+            background-image: url('/img/search.png');
+            background-repeat: no-repeat !important;
+            background-position: right center !important;
+            background-size: 18px 18px !important;
+            justify-content: right !important;
+            display: block !important;
+            width: 100% !important;
+            /*    height: calc(1.5em + .75rem + 7px) !important;
+                */ padding: .375rem .75rem !important;
+            font-size: 1rem !important;
+            font-weight: 400 !important;
+            line-height: 1.5 !important;
+            color: #6e707e !important;
+            background-clip: padding-box !important;
+            border: 1px solid #d1d3e2 !important;
+            border-radius: .25rem !important;
+            -webkit-transition: border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out !important;
+            transition: border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out !important;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out !important;
+            box-sizing: border-box !important;
+        }
+        /*.ui-grid-cell-contents{
+                      background: linear-gradient(to top,#FFFFFF ,#D9D9D9 ) fixed !important;
+
+                }*/
+
+        .ui-grid-header-cell-wrapper {
+            background: linear-gradient(to top,#D9D9D9,#FFFFFF ) fixed !important;
+        }
+
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
@@ -166,48 +253,43 @@
     <div class="sidebar">
     
       <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="/Users/Index" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>User</p>
-                    </a>
-                </li>
-              <li class="nav-item">
-                <a href="/ChangeRequestForms/Index" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>ChangeRequestForm</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="/Departments/Index" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Department</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                  <a href="/Employees/Index" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Employee</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-         
-        </ul>
-      </nav>
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Dashboard link that redirects to home page -->
+                        <li class="nav-item">
+                            <a href="/home" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <!-- Other menu items -->
+                        <li class="nav-item">
+                            <a href="/Users/Index" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/ChangeRequestForms/Index" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>ChangeRequestForm</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Departments/Index" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Department</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Employees/Index" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Employee</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
@@ -263,33 +345,7 @@
 <script src="/dist/js/adminlte.min.js"></script>
 
 
-    <script src="~/scripts/angular-loader.min.js"></script>
-    <script src="~/scripts/ui-grid.auto-resize.min.js"></script>
-    <script src="~/scripts/ui-grid.base.min.js"></script>
-    <script src="~/scripts/ui-grid.cellnav.min.js"></script>
-    <script src="~/scripts/ui-grid.core.min.js"></script>
-    <script src="~/scripts/ui-grid.edit.min.js"></script>
-    <script src="~/scripts/ui-grid.empty-base-layer.min.js"></script>
-    <script src="~/scripts/ui-grid.expandable.min.js"></script>
-    <script src="~/scripts/ui-grid.exporter.min.js"></script>
-    <script src="~/scripts/ui-grid.grouping.min.js"></script>
-    <script src="~/scripts/ui-grid.importer.min.js"></script>
-    <script src="~/scripts/ui-grid.infinite-scroll.min.js"></script>
-    <script src="~/scripts/ui-grid.min.js"></script>
-    <script src="~/scripts/ui-grid.move-columns.min.js"></script>
-    <script src="~/scripts/ui-grid.pagination.min.js"></script>
-    <script src="~/scripts/ui-grid.pinning.min.js"></script>
-    <script src="~/scripts/ui-grid.resize-columns.min.js"></script>
-    <script src="~/scripts/ui-grid.row-edit.min.js"></script>
-    <script src="~/scripts/ui-grid.savestate.min.js"></script>
-    <script src="~/scripts/ui-grid.selection.min.js"></script>
-    <script src="~/scripts/ui-grid.tree-base.min.js"></script>
-    <script src="~/scripts/ui-grid.tree-view.min.js"></script>
-    <script src="~/scripts/ui-grid.validate.min.js"></script>
-    <script src="~/scripts/ui-grid.js"></script>
-    <script src="~/scripts/toastr.min.js"></script>
-    <script src="~/scriptng/commonservices/gridregistrationservice.js"></script>
-    <script src="~/scriptng/commonservices/notificationservice.js"></script>
+
 <!-- AdminLTE for demo purposes -->
 @* <script src="/dist/js/demo.js"></script> *@
     @RenderSection("Scripts", required: false)

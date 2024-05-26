@@ -38,13 +38,18 @@ namespace Task1.Data.Models
             modelBuilder.Entity<ChangeRequestForm>(e =>
             {
                 e.HasIndex(e => e.Id).IsUnique();
-                e.HasOne(e => e.Employee)
+
+                e.HasOne(e => e.ReviewBy)
                 .WithMany(d => d.ChangeRequestForms)
-                .HasForeignKey(e => e.EmpId)
+                .HasForeignKey(e => e.ReviewById)
                 .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(e => e.RequestBy)
+                .WithMany()
+                .HasForeignKey(e => e.RequestById)
+                .OnDelete(DeleteBehavior.Restrict);
+
             });
-
-
         }
 
     }

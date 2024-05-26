@@ -1,69 +1,208 @@
-﻿@model IEnumerable<Task1.Data.Models.ChangeRequestForm>
+﻿@* @model IEnumerable<Task1.Data.Models.ChangeRequestForm> *@
 
 @{
-    ViewData["Title"] = "Request form";
+    ViewData["Title"] = "Change Request Forms";
 }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProjectName)
-            </th>
-            <th>
-                Module Name
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RequestBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RequestDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ChangeRequestDetails)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Signature)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModuleName)
-            </td>
-            <td>
-                @item.RequestBy
-            </td>
-            <td>
-                    @item.RequestDate.ToString("dd/MM/yyyy")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChangeRequestDetails)
-            </td>
-            <td>
-                @item.Status
-            </td>
-            <td>
-                <img src="/@item.Signature" alt="not found" width="100" />
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div ng-app="ngApp" ng-controller="changeRequestFormCtrl">
+    <header class="pt-5 text-center">
+        <h2>SQUARE INFORMATIX LIMITED</h2>
+        <h3>SOFTWARE DEPARTMENT</h3>
+        <p class="fw-bolder fs-2">Change Request Form</p>
+    </header>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Creation Portion using Grid System -->
+                <div class="row shadow-lg p-3">
+                    <!-- First Column -->
+                    <div class="col-lg-6">
+
+                        <!-- Project Name -->
+                        <div class=" class="form-group m-2">
+                            <label for="projectName" class="form-label mt-3">Project Name</label>
+                            <input id="projectName" ng-model="projectName" class="form-control" required />
+                        </div>
+                        <!-- Module Name -->
+                        <div class="form-group m-2">
+                            <label for="moduleName" class="form-label mt-3">Module Name</label>
+                            <input id="moduleName" ng-model="moduleName" class="form-control" required />
+                        </div>
+                        <!-- Request By -->
+                        <div class="form-group m-2">
+                            <label for="requestById" class="form-label mt-3">Request By</label>
+                            <select id="requestById" ng-model="requestById" class="form-control" required>
+                                <option value="">Select Employee</option>
+                                <option ng-repeat="employee in employees" value="{{employee.id}}">{{employee.name}}</option>
+                            </select>
+                        </div>
+                        <!-- Request Date -->
+                        <div class="form-group m-2">
+                            <label for="requestDate" class="form-label mt-3">Request Date</label>
+                            <input id="requestDate" type="date" ng-model="requestDate" class="form-control" required />
+                        </div>
+                    </div>
+                    <!-- Second Column -->
+                    <div class="form-group col-lg-6">
+                        <!-- Change Request Details -->
+                        <div class="m-2">
+                            <label for="changeRequestDetails" class="form-label mt-3">Change Request Details</label>
+                            <textarea id="changeRequestDetails" ng-model="changeRequestDetails" class="form-control" required></textarea>
+                        </div>
+                        <!-- Status -->
+                        <div class="form-group m-2">
+                            <label for="status" class="form-label mt-3">Status</label>
+                            <select id="status" ng-model="status" class="form-select" required>
+                                <option value="">Choose Status</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Cancel">Cancel</option>
+                                <option value="Deferred">Deferred</option>
+                            </select>
+                        </div>
+                        <!-- Authorized Signature -->
+                        <div class="form-group m-2">
+                            <label for="signature" class="form-label mt-3">Authorized Signature</label>
+                            <input id="signature" type="file" file-model="signature" class="form-control" accept="image/*" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit Button -->
+                <div class="form-group text-center mt-4">
+                    <input type="button" value="Create" class="btn btn-primary" ng-show="!editMode" ng-click="Create()" />
+                    <input type="button" value="Update" class="btn btn-primary" ng-show="editMode" ng-click="Update()" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="text-center mt-2">
+            <a href="/ChangeRequestForms/Index">Back to List</a>
+        </div>
+
+        <div class="table-responsive mt-4">
+            <table class="table m-0 text-center">
+                <thead>
+                    <tr>
+                        <th>
+                            Project Name
+                        </th>
+                        <th>
+                            Module Name
+                        </th>
+                        <th>
+                            Requested By
+                        </th>
+                        <th>
+                            Request By Name
+                        </th>
+                        <th>
+                            RequestByDeptName
+                        </th>
+                        <th>
+                            Request Date
+                        </th>
+                        <th>
+                            Change Request Details
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th>Authorized Signature</th>
+                        <th>Employee Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in changeRequestForms">
+
+                        <td>
+                            {{ x.projectName }}
+                        </td>
+                        <td>
+                            {{ x.moduleName }}
+                        </td>
+                        <td>
+                            {{ x.requestedBy }}
+                        </td>
+                        <td>
+                            {{x.requestByName}}
+                        </td>
+                        <td>
+                            {{x.requestByDeptName}}
+                        </td>
+                        <td>
+                            {{ x.requestDate }}
+                        </td>
+                        <td>
+                            {{ x.changeRequestDetails }}
+                        </td>
+                        <td>
+                            {{ x.status }}
+                        </td>
+                        <td>
+                            {{x.authorizedSignature}}
+                        </td>
+                        <td>
+                            {{x.employeeName}}
+                        </td>
+                        <td>
+                            <a ng-click="Edit(x.id,x.projectName, x.moduleName, x.requestedBy, x.requestDate, x.status,x.authorizedSignature)">Edit</a> |
+                            <a ng-click="Delete(x.id)">Delete</a>
+                            <a ng-click="Details(x.id)">Details</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <fieldset class="mt-5">
+                <legend style="width:180px">Allocation Details</legend>
+                <div class="row" style="height: 77vh;">
+                    <div class="col-lg-12 mb-4">
+                        @* <div class="card" style="margin: 10px"> *@
+                            <div ui-grid="gridOptionsList" ui-grid-exporter ui-grid-auto-fit-columns ui-grid-resize-columns ui-grid-auto-resize
+                                 style="font-family: 'Open Sans', Arial, sans-serif; color: #252222 !important; height: 75vh;" class="grid">
+                            </div>
+                        @* </div> *@
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div id="detailsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">Change Request Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Project Name:</strong> {{modalData.projectName}}</p>
+                    <p><strong>Module Name:</strong> {{modalData.moduleName}}</p>
+                    <p><strong>Requested By:</strong> {{modalData.requestedBy}}</p>
+                    <p><strong>Request By Name:</strong> {{modalData.requestByName}}</p>
+                    <p><strong>Request By Dept Name:</strong> {{modalData.requestByDeptName}}</p>
+                    <p><strong>Request Date:</strong> {{modalData.requestDate | date:'yyyy-MM-dd'}}</p>
+                    <p><strong>Change Request Details:</strong> {{modalData.changeRequestDetails}}</p>
+                    <p><strong>Status:</strong> {{modalData.status}}</p>
+                    <p><strong>Authorized Signature:</strong> {{modalData.authorizedSignature}}</p>
+                    <p><strong>Employee Name:</strong> {{modalData.employeeName}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script src="~/scriptng/services/changeRequestFormService.js"></script>
+<script src="~/scriptng/controllers/changeRequestFormCtrl.js"></script>
+<script src="~/scriptng/commonservices/gridregistrationservice.js"></script>

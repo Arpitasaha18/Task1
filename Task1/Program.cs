@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 //builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+//services.AddScoped<IDepartmentService, DepartmentService>();
+//services.AddScoped<IDepartmentService, DepartmentService>();
 
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task1.Data.Models;
 
@@ -42,78 +43,54 @@ namespace Task1.Controllers
             return View(department);
         }
 
-        // GET: Departments/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         // POST: Departments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DId,DId,Name")] Department department)
+        public async Task<string> Create([Bind("Name")][FromBody] Department department)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+            try
             {
                 _context.Add(department);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return "Successfully Created!";
             }
-            return View(department);
+            catch (Exception exp)
+            {
+                return exp.Message;
+            }
+            //}
+            //return "Model is not validate!";
         }
 
-        // GET: Departments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Departments.FindAsync(id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-            return View(department);
-        }
 
         // POST: Departments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DId,DId,Name")] Department department)
+        public async Task<string> Edit(int id, [FromBody] Department department)
         {
-            if (id != department.Id)
+            var existingDepartment = await _context.Departments.FindAsync(id);
+            if (existingDepartment == null)
             {
-                return NotFound();
+                return "Department not found.";
             }
 
-            if (ModelState.IsValid)
+            existingDepartment.Name = department.Name; // Update only the 'Name' property
+
+            try
             {
-                try
-                {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DepartmentExists(department.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(existingDepartment);
+                await _context.SaveChangesAsync();
+                return "Successfully updated";
             }
-            return View(department);
+            catch (Exception exp)
+            {
+                return exp.Message;
+            }
         }
+
 
 
         // POST: Departments/Delete/5

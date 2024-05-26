@@ -1,49 +1,68 @@
-ngApp.controller('deapartmentCtrl', ['$scope', 'departmentService', 'gridregistrationservice', 'notificationservice', function ($scope, departmentService, permissionProvider, gridregistrationservice, notificationservice) {
-    'use strict'
+ngApp.controller('departmentCtrl', ['$scope', 'departmentService', function ($scope, departmentService) {
+    'use strict';
 
     $scope.departments = [];
-
     $scope.id = "";
     $scope.name = "";
+    $scope.editMode = false;
 
     $scope.GetDepartments = function () {
         departmentService.GetDepartments().then(response => {
-            console.log(response.data)
             $scope.departments = response.data;
-        })
-    }
+        });
+    };
     $scope.GetDepartments();
 
     $scope.Delete = function (id) {
         if (window.confirm("Are you sure?")) {
-            console.log(id)
-            //delete
             departmentService.DeleteDepartment(id).then(response => {
-                //notificationservice.Notification("Successfully deleted", response.data, "Cannot delete.")
                 if (response.data) {
-                    alert("deleted")
+                    alert("Deleted successfully.");
                     $scope.GetDepartments();
+                } else {
+                    alert("Something went wrong. Cannot delete.");
                 }
-                else {
-                    alert("something went wrong. cannot delete")
-                }
-            })
+            });
         }
-    }
+    };
 
     $scope.Create = function () {
         var data = {
-            id: $scope.id,
             name: $scope.name
-        }
-        console.log(data)
-        departmentService.Create(data).then(response => {
-            console.log(reponse.data);
-        })
-    }
+        };
+        departmentService.CreateDepartment(data).then(response => {
+            alert(response.data);
+            $scope.GetDepartments();
+            $scope.ResetFields();
+        });
+    };
 
     $scope.Edit = function (id, name) {
         $scope.id = id;
         $scope.name = name;
-    }
-}])
+        $scope.editMode = true;
+    };
+
+    $scope.Update = function () {
+        var data = {
+            id: $scope.id,
+            name: $scope.name
+        };
+        departmentService.EditDepartment($scope.id, data).then(response => {
+            alert(response.data);
+            $scope.GetDepartments();
+            $scope.ResetFields();
+        }).catch(function (error) {
+            alert("Error: " + error.data);
+        });
+    };
+
+    $scope.ResetFields = function () {
+        $scope.id = "";
+        $scope.name = "";
+        $scope.editMode = false;
+    };
+}]);
+
+
+

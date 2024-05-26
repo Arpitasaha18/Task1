@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Task1.Data.Enums;
 using Task1.Data.Models;
+using Task1.Data.ViewModels;
 
 namespace Task1.Controllers
 {
@@ -24,11 +26,35 @@ namespace Task1.Controllers
         // GET: ChangeRequestForms 
         public async Task<IActionResult> Index()
         {
-            var requestForms = await _context.ChangeRequestForms
-                .Include(requestForm => requestForm.Employee)
-                .ToListAsync();
-            return View(requestForms);
+            return View();
         }
+        //join 2 tables. ChangeRequestFormVM,ChangeRequestForms
+        public async Task<IEnumerable<ChangeRequestFormVM>> GetChangeRequestForms()
+        {
+            return await _context.ChangeRequestForms
+                .Select(e => new ChangeRequestFormVM
+                {
+                    Id = e.Id,
+                    ProjectName = e.ProjectName,
+                    ModuleName = e.ModuleName,
+                    RequestByName = e.RequestBy.Name,
+                    RequestByDeptName = e.RequestBy.Department.Name,
+                    RequestDate = e.RequestDate.ToString("dd/MM/yyyy"),
+                    ChangeRequestDetails = e.ChangeRequestDetails,
+                    Status = e.Status,
+                    Signature = e.Signature,
+                    EmployeeName = e.ReviewBy.Name,
+                })
+                .ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<Employee>> GetEmployees()
+        {
+            return await _context.Employees.ToListAsync();
+        }
+
+
 
         // GET:ChangeRequestForms /Details/5
         public async Task<IActionResult> Details(int? id)
@@ -48,133 +74,121 @@ namespace Task1.Controllers
             return View(requestForm);
         }
 
-        // GET: ChangeRequestForm/Create
-        public IActionResult Create()
-        {
-            var data = _context.Employees.ToList();
-            ViewData["Employees"] = data;
-            return View();
-        }
+
 
         // POST: ChangeRequestForm/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ChangeRequestForm requestForm, IFormFile signature)
+
+        public async Task<string> Create([FromBody] ChangeRequestForm requestForm, IFormFile signature)
         {
-            //if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                var err = ModelState.ErrorCount;
+            }
+            try
+            {
 
-                requestForm.ProjectName = requestForm.ProjectName;
-                requestForm.ModuleName = requestForm.ModuleName;
-                requestForm.RequestDate = requestForm.RequestDate;
-                requestForm.RequestBy = requestForm.RequestBy;
-                requestForm.ChangeRequestDetails = requestForm.ChangeRequestDetails;
-                requestForm.Status = requestForm.Status;
-                requestForm.Signature=requestForm.Signature;
+                //if (signature == null)
+                //{
+                //    return "no picture foud";
+                //}
 
-                if (signature == null)
-                {
-                    return BadRequest();
-                }
+                //var filePath = Path.Combine(_env.WebRootPath, _signFolderName, signature.FileName);
+                //using (var stream = System.IO.File.Create(filePath))
+                //{
+                //    await signature.CopyToAsync(stream);
+                //}
 
-                var filePath = Path.Combine(_env.WebRootPath, _signFolderName, signature.FileName);
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    await signature.CopyToAsync(stream);
-                }
+                //requestForm.Signature = Path.Combine(_signFolderName, signature.FileName);
 
-                requestForm.Signature = Path.Combine(_signFolderName, signature.FileName);
+                requestForm.ReviewById = 44; //take Userid from logged in session
 
                 _context.Add(requestForm);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            
-            return View(requestForm);
+                return "successfully updated";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
-
-        // GET: ChangeRequestForm/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<string> Create([Bind("Name, DepartmentId")][FromBody] Employee employee)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                var employeeId = _context.Employees.Select(e => Convert.ToInt32(e.EmployeeId))
+                    .Max();
+                employee.EmployeeId = employeeId.ToString().PadLeft(8, '0');
+                _context.Add(employee);
+                await _context.SaveChangesAsync();
+                return "Successfully Created!";
             }
-
-            var requestForm = await _context.ChangeRequestForms.FindAsync(id);
-            if (requestForm == null)
+            catch (Exception exp)
             {
-                return NotFound();
+                return exp.Message;
             }
-            return View(requestForm);
         }
 
         // POST: ChangeRequestForm/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,projectName,moduleName,requestBy,requestDate,changeRequestDetails,status,sugnature")] ChangeRequestForm requestForm)
+        public async Task<string> Edit(int id, [FromBody] ChangeRequestForm requestForm)
         {
-            if (id != requestForm.Id)
+            var existingUser = await _context.ChangeRequestForms.FindAsync(id);
+            if (existingUser == null)
             {
-                return NotFound();
+                return "User not found.";
             }
 
-            if (ModelState.IsValid)
+            existingUser.ProjectName = requestForm.ProjectName;
+            existingUser.ModuleName = requestForm.ModuleName;
+            existingUser.RequestById = requestForm.RequestById;
+            existingUser.RequestDate = requestForm.RequestDate;
+            existingUser.ChangeRequestDetails = requestForm.ChangeRequestDetails;
+            existingUser.Status = requestForm.Status;
+            existingUser.Signature = requestForm.Signature;
+
+
+            try
             {
-                try
-                {
-                    _context.Update(requestForm);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ChangeRequestFormExists(requestForm.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(existingUser);
+                await _context.SaveChangesAsync();
+                return "Successfully updated";
             }
-            return View(requestForm);
+            catch (Exception exp)
+            {
+                return exp.Message;
+            }
         }
 
-        // GET: ChangeRequestForm/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var requestForm = await _context.ChangeRequestForms
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (requestForm == null)
-            {
-                return NotFound();
-            }
 
-            return View(requestForm);
-        }
 
         // POST: ChangeRequestForm/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var user = await _context.ChangeRequestForms.FindAsync(id);
-            if (user != null)
-            {
-                _context.ChangeRequestForms.Remove(user);
-            }
+        //[HttpPost, ActionName("Delete")]
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+        public async Task<bool> Delete(int id)
+        {
+            try
+            {
+                var changeRequestForm = await _context.ChangeRequestForms.FindAsync(id);
+                if (changeRequestForm == null)
+                {
+                    return false;
+                }
+
+                _context.ChangeRequestForms.Remove(changeRequestForm);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private bool ChangeRequestFormExists(int id)

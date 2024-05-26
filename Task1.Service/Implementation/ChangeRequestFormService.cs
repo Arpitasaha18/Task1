@@ -21,7 +21,7 @@ namespace Task1.Service
         public async Task<IEnumerable<ChangeRequestForm>> GetChangeRequestForms()
         {
             return await _context.ChangeRequestForms
-                .Include(requestForm => requestForm.Employee)
+                .Include(requestForm => requestForm.ReviewBy)
                 .ToListAsync();
         }
 

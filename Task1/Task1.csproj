@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\dist\" />
-    <Folder Include="wwwroot\ScriptNG\Controllers\" />
     <Folder Include="wwwroot\signature\" />
   </ItemGroup>
 
